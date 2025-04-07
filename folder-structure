@@ -1,0 +1,49 @@
+banking-app/
+├── azure-pipelines/
+│   ├── frontend-pipeline.yml
+│   ├── user-service-pipeline.yml
+│   ├── account-service-pipeline.yml
+│   ├── transaction-service-pipeline.yml
+│   └── terraform-infra-pipeline.yml
+│
+├── frontend/                            # React app
+│   ├── Dockerfile
+│   └── src/
+│       └── App.jsx
+│
+├── user-service/                        # Spring Boot (port 8081)
+│   ├── Dockerfile
+│   └── src/main/java/com/bank/user/
+│       └── UserController.java
+│
+├── account-service/                     # Spring Boot (port 8082)
+│   ├── Dockerfile
+│   └── src/main/java/com/bank/account/
+│       └── AccountController.java
+│
+├── transaction-service/                 # Spring Boot (port 8083)
+│   ├── Dockerfile
+│   └── src/main/java/com/bank/txn/
+│       └── TransactionController.java
+│
+├── helm-charts/                         # Helm deployments to AKS
+│   ├── user-service/
+│   ├── account-service/
+│   ├── transaction-service/
+│   └── frontend/
+│
+├── infra/                               # Terraform IaC
+│   ├── main.tf
+│   ├── aks.tf
+│   ├── db.tf
+│   ├── acr.tf
+│   ├── apim.tf
+│   ├── cache.tf
+│   ├── eventhub.tf
+│   ├── monitoring.tf
+│   ├── network.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   └── backend.tf                       # for Terraform state in Azure Storage
+│
+└── README.md

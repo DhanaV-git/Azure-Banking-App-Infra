@@ -1,0 +1,28 @@
+trigger:
+  branches:
+    include: [ main ]
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  ACR_NAME: 'dhanamicroservicesacrLSN'
+  IMAGE_NAME: 'transaction-service'
+
+steps:
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'transaction-service/pom.xml'
+    goals: 'package'
+    options: '-DskipTests'
+  displayName: 'Maven Build'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'ACR-ServiceConnection'
+    repository: $(IMAGE_NAME)
+    command: 'buildAndPush'
+    Dockerfile: 'transaction-service/Dockerfile'
+    tags: |
+      latest
+  displayName: 'Build & Push Docker Image'

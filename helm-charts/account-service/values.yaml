@@ -1,0 +1,12 @@
+replicaCount: 2
+
+image:
+  repository: dhanamicroservicesacrLSN.azurecr.io/account-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8082
+
+resources: {}

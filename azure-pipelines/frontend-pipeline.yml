@@ -1,0 +1,32 @@
+trigger:
+  branches:
+    include: [ main ]
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  ACR_NAME: 'dhanamicroservicesacrLSN'
+  IMAGE_NAME: 'frontend'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    cd frontend
+    npm install
+    npm run build
+  displayName: 'Build React App'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'ACR-ServiceConnection'
+    repository: $(IMAGE_NAME)
+    command: 'buildAndPush'
+    Dockerfile: 'frontend/Dockerfile'
+    tags: |
+      latest
+  displayName: 'Build & Push Docker Image'

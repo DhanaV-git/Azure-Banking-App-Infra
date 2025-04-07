@@ -1,0 +1,39 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  TF_IN_AUTOMATION: true
+  TF_VAR_resource_group_name: 'banking-app-rg'
+  TF_VAR_location: 'East US'
+
+stages:
+  - stage: Terraform_Deploy
+    displayName: 'Terraform Deployment Stage'
+    jobs:
+      - job: terraform_apply
+        displayName: 'Terraform Init, Plan, Apply'
+        steps:
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'AzureServiceConnection'  # 👈 Replace with your actual Azure DevOps Service Connection
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                echo "Logging into Azure..."
+                az account show
+
+                echo "Initializing Terraform..."
+                cd infra
+                terraform init
+
+                echo "Planning Terraform changes..."
+                terraform plan -out=tfplan
+
+                echo "Applying infrastructure..."
+                terraform apply -auto-approve tfplan
+            displayName: 'Run Terraform Infrastructure Deployment'
