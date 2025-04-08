@@ -1,0 +1,25 @@
+# For my own testing to DockerHub --- Push to ACR happens with AzureDevOps --- !!! Local Testing Only !!! ----
+name: Build and Push to Docker Hub
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  dockerhub:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:latest ./frontend
+
+    - name: Push Docker image
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
