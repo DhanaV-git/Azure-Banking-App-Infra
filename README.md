@@ -67,6 +67,9 @@ banking-app/
 
 Images are built and pushed to ACR via GitHub Actions:
 
+![image](https://github.com/user-attachments/assets/c574874a-76e1-42f7-800d-647c57038f2e)
+
+
 ```
 <registry>.azurecr.io/<service>:latest
 
@@ -113,6 +116,9 @@ Visit: [http://localhost:5173](http://localhost:5173)
 ---
 
 ## 📞 API Test Buttons in UI
+
+![image](https://github.com/user-attachments/assets/758452a0-df1c-46aa-ba24-fb1802396cc0)
+
 
 - 👤 **User Service**: `/api/v1/users/123`
 - 💳 **Account Service**: `/api/v1/accounts/123`
