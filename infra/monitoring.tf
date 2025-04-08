@@ -6,66 +6,45 @@ resource "azurerm_log_analytics_workspace" "monitor" {
   retention_in_days   = 30
 }
 
-resource "azurerm_monitor_diagnostic_setting" "aks_logs" {
-  name                       = "aks-logs"
-  target_resource_id         = module.aks.aks_id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.monitor.id
+resource "azurerm_monitor_data_collection_rule" "aks_dcr" {
+  name                = "banking-aks-dcr"
+  location            = var.location
+  resource_group_name = var.resource_group_name
 
-  log {
-    category = "kube-apiserver"
-    enabled  = true
+  data_flow {
+    streams      = ["Microsoft-ContainerInsights"]
+    destinations = ["loganalytics"]
+  }
 
-    retention_policy {
-      enabled = false
+  destinations {
+    log_analytics {
+      name                  = "loganalytics"
+      workspace_resource_id = azurerm_log_analytics_workspace.monitor.id
     }
   }
 
-  log {
-    category = "kube-controller-manager"
-    enabled  = true
-
-    retention_policy {
-      enabled = false
-    }
-  }
-
-  log {
-    category = "kube-scheduler"
-    enabled  = true
-
-    retention_policy {
-      enabled = false
-    }
-  }
-
-  metric {
-    category = "AllMetrics"
-    enabled  = true
-
-    retention_policy {
-      enabled = false
+  data_sources {
+    performance_counter {
+      name = "perfCounter"
+      counter_specifiers = ["\\Processor(_Total)\\% Processor Time"]
+      sampling_frequency_in_seconds = 15
+      streams = ["Microsoft-InsightsMetrics"]
     }
   }
 }
 
 resource "azurerm_dashboard_grafana" "grafana" {
   name                = "banking-grafana"
-  location            = var.location
   resource_group_name = var.resource_group_name
+  location            = var.location
   identity {
     type = "SystemAssigned"
   }
-  grafana_workspace_name = "banking-grafana-workspace"
-  sku {
-    name = "Standard"
-  }
-  api_key_enabled = true
-}
 
-resource "azurerm_monitor_workspace" "grafana_backend" {
-  name                = "banking-grafana-workspace"
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  grafana_major_version = 9  # Required
+
+  api_key_enabled = true
+  public_network_access_enabled = true
 }
 
 output "grafana_url" {
